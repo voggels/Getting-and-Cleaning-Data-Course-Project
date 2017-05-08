@@ -62,15 +62,15 @@ mergeddatacolumnnames<-colnames(mergeddata)
 #2.2 Create a vector that selects the column variable we are interested in 
 #which are: activityID, subjectID, anything with mean(mean()) and standard deviation (std())
 logicgateformeanandstddev<-(grepl("activityID", mergeddatacolumnnames)|
-                    grepl("subjectID", mergeddatacolumnnames)|
-                    grepl("mean", mergeddatacolumnnames)|
-                    grepl("std", mergeddatacolumnnames)
-                )
+                                    grepl("subjectID", mergeddatacolumnnames)|
+                                    grepl("mean", mergeddatacolumnnames)|
+                                    grepl("std", mergeddatacolumnnames)
+)
 #2.3 Use the logic gate to filter out the desired data for mean and stddev of each category
 meanandstddevs<- mergeddata[logicgateformeanandstddev==TRUE]
 
 #3.Uses descriptive activity names to name the activities in the data set.
-mergeddata2<-merge(activitylabels,mergeddata,by="activityID")
+mergeddata2<-merge(activitylabels,meanandstddevs,by="activityID")
 
 #4.Appropriately labels the data set with descriptive variable names.
 names(mergeddata2)
@@ -82,5 +82,6 @@ tidy1<- aggregate(.~subjectID+activityID, mergeddata2, mean)
 tidy1columnnames<-colnames(tidy1)
 logicgatetoremoveactivityTYPE<-(!grepl("activityTYPE",tidy1columnnames))
 tidydataset<- tidy1[logicgatetoremoveactivityTYPE==TRUE]
+tidydataset<-merge(activitylabels,tidydataset,by="activityID")
 #5.1 Write tidy data set as a .txt output
 write.table(tidydataset, "tidydataset.txt", row.name=FALSE)
